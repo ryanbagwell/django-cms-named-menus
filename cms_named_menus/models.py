@@ -5,7 +5,7 @@ from jsonfield import JSONField
 import collections
 
 
-class NamedCMSMenu(models.Model):
+class CMSNamedMenu(models.Model):
     name = models.CharField(max_length=255)
     slug = AutoSlugField(always_update=True, populate_from='name')
     pages = models.ManyToManyField(Page)

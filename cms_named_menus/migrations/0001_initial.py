@@ -8,30 +8,31 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'NamedCMSMenu'
-        db.create_table(u'named_cms_menus_namedcmsmenu', (
+        # Adding model 'CMSNamedMenu'
+        db.create_table(u'cms_named_menus_cmsnamedmenu', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
             ('slug', self.gf('autoslug.fields.AutoSlugField')(unique_with=(), max_length=50, populate_from='name')),
+            ('pages_json', self.gf('jsonfield.fields.JSONField')(null=True, blank=True)),
         ))
-        db.send_create_signal(u'named_cms_menus', ['NamedCMSMenu'])
+        db.send_create_signal(u'cms_named_menus', ['CMSNamedMenu'])
 
-        # Adding M2M table for field pages on 'NamedCMSMenu'
-        m2m_table_name = db.shorten_name(u'named_cms_menus_namedcmsmenu_pages')
+        # Adding M2M table for field pages on 'CMSNamedMenu'
+        m2m_table_name = db.shorten_name(u'cms_named_menus_cmsnamedmenu_pages')
         db.create_table(m2m_table_name, (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('namedcmsmenu', models.ForeignKey(orm[u'named_cms_menus.namedcmsmenu'], null=False)),
+            ('cmsnamedmenu', models.ForeignKey(orm[u'cms_named_menus.cmsnamedmenu'], null=False)),
             ('page', models.ForeignKey(orm['cms.page'], null=False))
         ))
-        db.create_unique(m2m_table_name, ['namedcmsmenu_id', 'page_id'])
+        db.create_unique(m2m_table_name, ['cmsnamedmenu_id', 'page_id'])
 
 
     def backwards(self, orm):
-        # Deleting model 'NamedCMSMenu'
-        db.delete_table(u'named_cms_menus_namedcmsmenu')
+        # Deleting model 'CMSNamedMenu'
+        db.delete_table(u'cms_named_menus_cmsnamedmenu')
 
-        # Removing M2M table for field pages on 'NamedCMSMenu'
-        db.delete_table(db.shorten_name(u'named_cms_menus_namedcmsmenu_pages'))
+        # Removing M2M table for field pages on 'CMSNamedMenu'
+        db.delete_table(db.shorten_name(u'cms_named_menus_cmsnamedmenu_pages'))
 
 
     models = {
@@ -73,11 +74,12 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'slot': ('django.db.models.fields.CharField', [], {'max_length': '50', 'db_index': 'True'})
         },
-        u'named_cms_menus.namedcmsmenu': {
-            'Meta': {'object_name': 'NamedCMSMenu'},
+        u'cms_named_menus.cmsnamedmenu': {
+            'Meta': {'object_name': 'CMSNamedMenu'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'pages': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['cms.Page']", 'symmetrical': 'False'}),
+            'pages_json': ('jsonfield.fields.JSONField', [], {'null': 'True', 'blank': 'True'}),
             'slug': ('autoslug.fields.AutoSlugField', [], {'unique_with': '()', 'max_length': '50', 'populate_from': "'name'"})
         },
         u'sites.site': {
@@ -88,4 +90,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['named_cms_menus']
+    complete_apps = ['cms_named_menus']

@@ -1,0 +1,9 @@
+{
+  "name": "django-cms-named-menus",
+  "version": "v0.1",
+  "dependencies": {
+    "jquery": "~2.1.1",
+    "underscore": "latest",
+    "backbone": "~1.1.2"
+  }
+}

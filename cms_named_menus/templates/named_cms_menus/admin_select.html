@@ -1,0 +1,52 @@
+{% load static %}
+{% if not line.fields|length_is:'1' and not field.is_readonly %}
+{{ field.errors }}
+{% endif %}
+
+{% if field.is_checkbox %}
+    {{ field.field }}{{ field.label_tag }}
+{% else %}
+    {{ field.label_tag }}
+    {% if field.is_readonly %}
+        <p>{{ field.contents|linebreaksbr }}</p>
+    {% else %}
+        {{ field.field }}
+    {% endif %}
+{% endif %}
+{% if field.field.help_text %}
+    <p class="help">{{ field.field.help_text|safe }}</p>
+{% endif %}
+
+<script>
+    var menuPages = '{{ menu_pages|safe }}';
+    var cmsPages = {{ cms_pages|safe }}
+    $ = jQuery = jquery = django.jQuery;
+</script>
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+<script src="{% static "namedcmsmenus/jquery.mjs.nestedSortable.js" %}"></script>
+
+<div class="draganddrop">
+    <section class="menu">
+        <ul class="menu-pages">
+        </ul>
+
+    </section>
+    <section class="available">
+        <ul class="available-pages connectedSortable">
+        </ul>
+    </section>
+</div>
+
+<script>
+
+    $.each(cmsPages, function(i, page) {
+        $('<li />').addClass('ui-state-default').attr('data-id', page.id).text(page.title).appendTo('ul.available-pages');
+    });
+
+    $( "ul.available-pages, ul.menu-pages" ).sortable({
+            connectWith: ".connectedSortable"
+    });
+
+
+</script>

@@ -45,6 +45,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'Django>=1.4',
+        'django-cms>=3.0',
     ],
     cmdclass={
         'install': Install

@@ -9,7 +9,7 @@
             {% for field in line %}
                 <div{% if not line.fields|length_is:'1' %} class="field-box{% if field.field.name %} field-{{ field.field.name }}{% endif %}{% if not field.is_readonly and field.errors %} errors{% endif %}"{% elif field.is_checkbox %} class="checkbox-row"{% endif %}>
                     {% if field.field.html_name == 'pages_json' %}
-                        {% include "named_cms_menus/admin_select.html" %}
+                        {% include "cms_named_menus/admin_select.html" %}
                     {% else %}
                         {% if not line.fields|length_is:'1' and not field.is_readonly %}{{ field.errors }}{% endif %}
                         {% if field.is_checkbox %}

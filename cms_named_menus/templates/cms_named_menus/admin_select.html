@@ -17,36 +17,26 @@
     <p class="help">{{ field.field.help_text|safe }}</p>
 {% endif %}
 
+
+<section class="pages">
+    <aside class="menu-pages dd">
+        <h3>Selected Pages</h3>
+        <div class="dd-empty"></div>
+    </aside>
+
+    <aside class="available-pages dd">
+        <h3>Available Pages</h3>
+        <ol class="dd-list"></ol>
+    </aside>
+</section>
+
+<link type="text/css" rel="stylesheet" href="{% static "cmsnamedmenus/css/admin.css" %}" />
+
+<script src="{% static "cmsnamedmenus/js/admin.js" %}"></script>
 <script>
-    var menuPages = '{{ menu_pages|safe }}';
-    var cmsPages = {{ cms_pages|safe }}
-    $ = jQuery = jquery = django.jQuery;
-</script>
-<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
-<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-<script src="{% static "namedcmsmenus/jquery.mjs.nestedSortable.js" %}"></script>
-
-<div class="draganddrop">
-    <section class="menu">
-        <ul class="menu-pages">
-        </ul>
-
-    </section>
-    <section class="available">
-        <ul class="available-pages connectedSortable">
-        </ul>
-    </section>
-</div>
-
-<script>
-
-    $.each(cmsPages, function(i, page) {
-        $('<li />').addClass('ui-state-default').attr('data-id', page.id).text(page.title).appendTo('ul.available-pages');
+    var app = new App({
+        menuPages: '{{ menu_pages|safe }}',
+        cmsPages: {{ cms_pages|safe }},
+        el: '.pages'
     });
-
-    $( "ul.available-pages, ul.menu-pages" ).sortable({
-            connectWith: ".connectedSortable"
-    });
-
-
 </script>

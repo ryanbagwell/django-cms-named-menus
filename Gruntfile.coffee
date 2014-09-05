@@ -26,14 +26,30 @@ module.exports = (grunt) ->
           rename: coffeeRename
         ]
 
+    less:
+      compile:
+        files: [
+          expand: true
+          cwd: './cms_named_menus/static/cmsnamedmenus/less'
+          src: ['admin.less']
+          dest: './cms_named_menus/static/cmsnamedmenus/css'
+          ext: '.css'
+        ]
+
+
     watch:
       options:
         spawn: true
-      coffeeMain:
+      coffee:
         options:
-          cwd: './eventtracking/static/eventtracking/coffee'
+          cwd: './cms_named_menus/static/cmsnamedmenus/coffee'
         files: ['**/*.coffee']
-        tasks: ['coffee:compile']
+        tasks: ['webpack']
+      less:
+        options:
+          cwd: './cms_named_menus/static/cmsnamedmenus/less'
+        files: ['**/*.less']
+        tasks: ['less']
 
 
     uglify:
@@ -42,18 +58,53 @@ module.exports = (grunt) ->
       files:
         expand: true
         flatten: false
-        cwd: './eventtracking/static/eventtracking/js'
+        cwd: './cms_named_menus/static/cmsnamedmenus/coffee'
         src: '**/*.js'
-        dest: './eventtracking/static/eventtracking/js'
+        dest: './cms_named_menus/static/eventtracking/js'
 
+    webpack:
+      all:
+        cache: true
+        devtool: 'sourcemap'
+        entry:
+          "admin": "admin"
+        output:
+          path: "cms_named_menus/static/cmsnamedmenus/js"
+          filename: "[name].js"
+          library: 'App'
+        resolve:
+          extensions: ['.coffee', '.js', '']
+          modulesDirectories: [
+            './cms_named_menus/static/cmsnamedmenus/coffee/'
+            './cms_named_menus/static/cmsnamedmenus/vendor/'
+          ]
+          alias:
+            'jquery': 'jquery/dist/jquery.min'
+            'underscore': 'underscore/underscore'
+            'backbone': 'backbone/backbone'
+            'jquery-ui': 'jquery-ui/ui/jquery-ui'
+            'jquery-nestable':'jquery.nestable/jquery.nestable'
+        module:
+          loaders: [
+            {test: /jquery\.js$/, loader: 'expose?$!expose?jQuery'}
+            {test: /\.coffee$/, loader: 'coffee'}
+          ]
+        stats:
+          colors: true
+          modules: true
+          reasons: true
+        watch: false
+        keepalive: false
 
 
   # Load grunt plugins
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-uglify'
+  grunt.loadNpmTasks 'grunt-contrib-less'
+  grunt.loadNpmTasks 'grunt-webpack'
 
 
   # Define tasks.
-  grunt.registerTask 'build', ['coffee', 'uglify']
-  grunt.registerTask 'default', ['watch']
+  grunt.registerTask 'build', ['webpack:all']
+

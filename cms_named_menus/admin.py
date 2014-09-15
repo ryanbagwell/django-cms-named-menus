@@ -1,7 +1,5 @@
 from django.contrib import admin
 from .models import CMSNamedMenu
-from cms.models.pagemodel import Page
-from collections import OrderedDict
 import json
 from django.conf import settings
 from menus.menu_pool import menu_pool

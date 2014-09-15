@@ -8,24 +8,26 @@
             {% if line.fields|length_is:'1' %}{{ line.errors }}{% endif %}
             {% for field in line %}
                 <div{% if not line.fields|length_is:'1' %} class="field-box{% if field.field.name %} field-{{ field.field.name }}{% endif %}{% if not field.is_readonly and field.errors %} errors{% endif %}"{% elif field.is_checkbox %} class="checkbox-row"{% endif %}>
-                    {% if field.field.html_name == 'pages_json' %}
-                        {% include "cms_named_menus/admin_select.html" %}
+
+                {% if field.field.html_name == 'pages' %}
+
+                    {% include "cms_named_menus/admin_select.html" %}
+                {% else %}
+                    {% if not line.fields|length_is:'1' and not field.is_readonly %}{{ field.errors }}{% endif %}
+                    {% if field.is_checkbox %}
+                        {{ field.field }}{{ field.label_tag }}
                     {% else %}
-                        {% if not line.fields|length_is:'1' and not field.is_readonly %}{{ field.errors }}{% endif %}
-                        {% if field.is_checkbox %}
-                            {{ field.field }}{{ field.label_tag }}
+                        {{ field.label_tag }}
+                        {% if field.is_readonly %}
+                            <p>{{ field.contents|linebreaksbr }}</p>
                         {% else %}
-                            {{ field.label_tag }}
-                            {% if field.is_readonly %}
-                                <p>{{ field.contents|linebreaksbr }}</p>
-                            {% else %}
-                                {{ field.field }}
-                            {% endif %}
-                        {% endif %}
-                        {% if field.field.help_text %}
-                            <p class="help">{{ field.field.help_text|safe }}</p>
+                            {{ field.field }}
                         {% endif %}
                     {% endif %}
+                    {% if field.field.help_text %}
+                        <p class="help">{{ field.field.help_text|safe }}</p>
+                    {% endif %}
+                {% endif %}
                 </div>
             {% endfor %}
         </div>

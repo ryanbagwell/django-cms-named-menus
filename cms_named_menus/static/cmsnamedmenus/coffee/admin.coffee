@@ -13,27 +13,21 @@ module.exports = class CMSNamedMenuAdmin extends Backbone.View
 
     itemTemplate: _.template('<li class="dd-item" \
                                   data-id="<%= id %>" \
-                                  data-page-id="<%= pageId %>" \
-                                  data-page-title="<%= pageTitle %>"> \
-                                  <div class="dd-handle"><%= pageTitle %></div> \
+                                  data-title="<%= title %>"> \
+                                  <div class="dd-handle"><%= title %></div> \
                               </li>')
 
     events:
       'change .menu-pages': 'updateJSON'
 
-
     initialize: (@options) ->
 
-      _.each @options.cmsPages, (page, i) =>
+      $availablePagesList = @createNestedList @options.availablePages
 
-        html = @itemTemplate
-                id: page.id
-                pageId: page.id
-                pageTitle: page.title
-
-        $(html).appendTo @$el.find('.available-pages ol')
+      @$el.find('.available-pages').append $availablePagesList
 
       $menuPagesList = @createNestedList @options.menuPages
+
       @$el.find('.menu-pages').append $menuPagesList
 
       @$el.find('.available-pages, .menu-pages').nestable @nestableOptions
@@ -44,7 +38,7 @@ module.exports = class CMSNamedMenuAdmin extends Backbone.View
 
     createNestedList: (pages) ->
 
-      if _.isNull(pages)
+      if _.isNull(pages) or pages.length is 0
         return $('<div class="dd-empty"></div>');
 
       $ol = $('<ol />')
@@ -81,7 +75,8 @@ module.exports = class CMSNamedMenuAdmin extends Backbone.View
 
       data = $(e.currentTarget).nestable('serialize')
 
-      $('#id_pages_json').val JSON.stringify(data)
+
+      $('#id_pages').val JSON.stringify(data)
 
 
 

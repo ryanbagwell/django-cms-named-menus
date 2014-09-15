@@ -5,7 +5,6 @@ from django import template
 from ..models import CMSNamedMenu
 from django.core.exceptions import ObjectDoesNotExist
 import logging
-from menus.templatetags.menu_tags import flatten
 from menus.menu_pool import menu_pool
 
 logger = logging.getLogger(__name__)
@@ -33,7 +32,7 @@ class ShowMultipleMenu(ShowMenu):
         menu_name = kwargs.pop('menu_name')
 
         try:
-            named_menu = CMSNamedMenu.objects.get(name__iexact=menu_name).pages_json
+            named_menu = CMSNamedMenu.objects.get(name__iexact=menu_name).pages
         except ObjectDoesNotExist:
             logging.warn("Named CMS Menu %s not found" % menu_name)
             context['children'] = []
@@ -51,7 +50,6 @@ class ShowMultipleMenu(ShowMenu):
                 'extra_active': kwargs.get('extra_active'),
                 'namespace': kwargs.get('namespace')
             })
-
 
         return context
 
@@ -85,8 +83,6 @@ class ShowMultipleMenu(ShowMenu):
                 return node
 
         return
-
-
 
 
 register.tag(ShowMultipleMenu)

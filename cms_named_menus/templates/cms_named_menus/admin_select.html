@@ -24,12 +24,10 @@
 <section class="pages">
     <aside class="menu-pages dd">
         <h3>Selected Pages</h3>
-        <!-- <div class="dd-empty"></div> -->
     </aside>
 
     <aside class="available-pages dd">
         <h3>Available Pages</h3>
-        <ol class="dd-list"></ol>
     </aside>
 </section>
 
@@ -37,7 +35,7 @@
 <script>
     var app = new App({
         menuPages: {{ menu_pages|safe }},
-        cmsPages: {{ cms_pages|safe }},
+        availablePages: {{ available_pages|safe }},
         el: '.pages'
     });
 </script>

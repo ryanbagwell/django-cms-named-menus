@@ -16,7 +16,7 @@ class CMSNamedMenuAdmin(admin.ModelAdmin):
 
         extra_context = {
             'menu_pages': json.dumps(menu_pages),
-            'cms_pages': self.serialize_navigation(request),
+            'available_pages': self.serialize_navigation(request),
             'debug': settings.DEBUG,
         }
 
@@ -29,8 +29,8 @@ class CMSNamedMenuAdmin(admin.ModelAdmin):
         cleaned = []
 
         for node in nodes:
-            node.children = []
-            node.parent = []
+            node.children = None
+            node.parent = None
             cleaned.append(node.__dict__)
 
         return json.dumps(cleaned)

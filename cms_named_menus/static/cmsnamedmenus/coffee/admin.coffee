@@ -42,7 +42,6 @@ module.exports = class CMSNamedMenuAdmin extends Backbone.View
 
       @$el.css 'min-height', @$el.height()
 
-
     createNestedList: (pages) ->
 
       if _.isNull(pages)

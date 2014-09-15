@@ -4,6 +4,7 @@ from cms.models.pagemodel import Page
 from collections import OrderedDict
 import json
 from django.conf import settings
+from menus.menu_pool import menu_pool
 
 
 class CMSNamedMenuAdmin(admin.ModelAdmin):
@@ -13,31 +14,28 @@ class CMSNamedMenuAdmin(admin.ModelAdmin):
 
     def change_view(self, request, object_id, form_url='', extra_context={}):
 
-        menu = CMSNamedMenu.objects.get(id=object_id).pages_json
+        menu_pages = CMSNamedMenu.objects.get(id=object_id).pages
 
         extra_context = {
-            'menu_pages': json.dumps(menu),
-            'cms_pages': self.get_pages_json(),
+            'menu_pages': json.dumps(menu_pages),
+            'cms_pages': self.serialize_navigation(request),
             'debug': settings.DEBUG,
         }
 
         return super(CMSNamedMenuAdmin, self).change_view(request, object_id, form_url, extra_context)
 
-    def get_pages_json(self):
+    def serialize_navigation(self, request):
 
-        pages_json = []
+        nodes = menu_pool.get_nodes(request)
 
-        pages = Page.objects.all()
+        cleaned = []
 
-        for page in pages:
+        for node in nodes:
+            node.children = []
+            node.parent = []
+            cleaned.append(node.__dict__)
 
-            pages_json.append({
-                'title': page.get_title(),
-                'slug': page.get_slug(),
-                'id': page.id,
-            })
-
-        return json.dumps(pages_json)
+        return json.dumps(cleaned)
 
 
 admin.site.register(CMSNamedMenu, CMSNamedMenuAdmin)

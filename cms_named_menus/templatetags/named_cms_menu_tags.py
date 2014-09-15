@@ -2,9 +2,11 @@ from menus.templatetags.menu_tags import ShowMenu
 from classytags.arguments import IntegerArgument, Argument, StringArgument
 from classytags.core import Options
 from django import template
-from ..models import NamedCMSMenu
+from ..models import CMSNamedMenu
 from django.core.exceptions import ObjectDoesNotExist
 import logging
+from menus.templatetags.menu_tags import flatten
+from menus.menu_pool import menu_pool
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +14,7 @@ register = template.Library()
 
 
 class ShowMultipleMenu(ShowMenu):
-    name = 'show_multiple_menu'
+    name = 'show_named_menu'
 
     options = Options(
         StringArgument('menu_name', required=True),
@@ -30,26 +32,61 @@ class ShowMultipleMenu(ShowMenu):
 
         menu_name = kwargs.pop('menu_name')
 
-        context = super(ShowMultipleMenu, self).get_context(context, **kwargs)
-
         try:
-            menu = NamedCMSMenu.objects.get(name__iexact=menu_name)
+            named_menu = CMSNamedMenu.objects.get(name__iexact=menu_name).pages_json
         except ObjectDoesNotExist:
             logging.warn("Named CMS Menu %s not found" % menu_name)
             context['children'] = []
             return context
 
-        menu_pages = menu.get_page_titles()
+        nodes = menu_pool.get_nodes(context['request'], kwargs['namespace'], kwargs['root_id'])
 
-        context.update({
-            'children': self.filter_children(menu_pages, context['children'])
+        children = self.arrange_nodes(nodes, named_menu)
+
+        context.update({'children': children,
+                'template': kwargs.get('template'),
+                'from_level': kwargs.get('from_level'),
+                'to_level': kwargs.get('to_level'),
+                'extra_inactive': kwargs.get('extra_inactive'),
+                'extra_active': kwargs.get('extra_active'),
+                'namespace': kwargs.get('namespace')
             })
+
 
         return context
 
-    def filter_children(self, menu_pages, children):
+    def arrange_nodes(self, node_list, node_config):
 
-        return [node for node in children if node.title in menu_pages]
+        arranged_nodes = []
+
+        for item in node_config:
+
+            arranged_nodes.append(self.create_node(item, node_list))
+
+        return arranged_nodes
+
+    def create_node(self, item, node_list):
+
+        item_node = self.get_node_by_id(item['id'], node_list)
+
+        for child_item in item.get('children', []):
+
+            child_node = self.get_node_by_id(child_item['id'], node_list)
+
+            item_node.children.append(child_node)
+
+        return item_node
+
+    def get_node_by_id(self, id, nodes):
+
+        for node in nodes:
+
+            if node.id == id:
+                return node
+
+        return
+
+
+
 
 register.tag(ShowMultipleMenu)
-

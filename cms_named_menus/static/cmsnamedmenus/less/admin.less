@@ -16,6 +16,28 @@
 
         ol {
             min-height: inherit;
+
+            li {
+                button {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                }
+            }
         }
     }
+
+}
+
+.field-pages_json {
+
+    textarea, p.help {
+        display: none;
+
+        .debug & {
+            display: initial;
+
+        }
+    }
+
 }

@@ -1,4 +1,7 @@
 {% load static %}
+
+<link type="text/css" rel="stylesheet" href="{% static "cmsnamedmenus/css/admin.css" %}" />
+
 {% if not line.fields|length_is:'1' and not field.is_readonly %}
 {{ field.errors }}
 {% endif %}
@@ -21,7 +24,7 @@
 <section class="pages">
     <aside class="menu-pages dd">
         <h3>Selected Pages</h3>
-        <div class="dd-empty"></div>
+        <!-- <div class="dd-empty"></div> -->
     </aside>
 
     <aside class="available-pages dd">
@@ -30,12 +33,10 @@
     </aside>
 </section>
 
-<link type="text/css" rel="stylesheet" href="{% static "cmsnamedmenus/css/admin.css" %}" />
-
 <script src="{% static "cmsnamedmenus/js/admin.js" %}"></script>
 <script>
     var app = new App({
-        menuPages: '{{ menu_pages|safe }}',
+        menuPages: {{ menu_pages|safe }},
         cmsPages: {{ cms_pages|safe }},
         el: '.pages'
     });

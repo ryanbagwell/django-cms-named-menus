@@ -1,9 +1,7 @@
 include README.rst
-include .bowerrc
-include bower.json
-include package.json
-include Gruntfile.coffee
-include cms_named_menus/static/eventtracking/css/*
-include cms_named_menus/static/eventtracking/js/*
+include cms_named_menus/static/cmsnamedmenus/css/*
+include cms_named_menus/static/cmsnamedmenus/js/*
+exclude cms_named_menus/static/cmsnamedmenus/coffee/*
+exclude cms_named_menus/static/cmsnamedmenus/less/*
 include cms_named_menus/templates/cms_named_menus/*
-recursive-exclude *.pyc
+recursive-exclude *.pyc .bowerrc bower.json Gruntfile.coffee package.json

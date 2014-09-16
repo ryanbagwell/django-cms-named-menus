@@ -25,7 +25,11 @@ After installation, place the ``{% show_named_menu 'MenuName' %}`` template tag 
     {% show_named_menu "Main Menu" %}
   </ul>
   
-Then, create your menu in the admin using the drag and drop interface. 
+Next, create your menu in the admin area using the drag and drop interface.
+
+.. image:: ui.png
+
+
 
 
 

@@ -7,7 +7,7 @@ read = lambda filepath: codecs.open(filepath, 'r', 'utf-8').read()
 
 setup(
     name='django-cms-named-menus',
-    version='0.1.6',
+    version='0.1.7',
     description='Allows you to add named menus like Wordpress',
     long_description=read(os.path.join(os.path.dirname(__file__), 'README.rst')),
     author='Ryan Bagwell',

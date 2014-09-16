@@ -13,19 +13,6 @@ module.exports = (grunt) ->
   grunt.initConfig
     pkg: grunt.file.readJSON 'package.json'
 
-
-    coffee:
-      compile:
-        options:
-          sourceMap: true
-        files: [
-          expand: true
-          cwd: './eventtracking/static/eventtracking/coffee'
-          src: ['**/*.{coffee,litcoffee}']
-          dest: './eventtracking/static/eventtracking/js'
-          rename: coffeeRename
-        ]
-
     less:
       compile:
         files: [
@@ -50,7 +37,6 @@ module.exports = (grunt) ->
           cwd: './cms_named_menus/static/cmsnamedmenus/less'
         files: ['**/*.less']
         tasks: ['less']
-
 
     uglify:
       options:
@@ -106,5 +92,5 @@ module.exports = (grunt) ->
 
 
   # Define tasks.
-  grunt.registerTask 'build', ['webpack:all']
+  grunt.registerTask 'build', ['less', 'webpack:all']
 

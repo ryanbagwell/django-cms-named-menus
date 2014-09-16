@@ -1,0 +1,33 @@
+Django CMS Named Menus
+=====================
+
+An extension for Django CMS that allows you to create multiple menus like Wordpress
+
+
+Installation
+------------
+
+1. Install with pip.
+
+2. Add ``cms_named_menus`` to INSTALLED_APPS
+
+
+Usage
+-----
+
+After installation, place the ``{% show_named_menu 'MenuName' %}`` template tag where you want your menu to appear.
+
+.. code::
+
+  {% load named_cms_menu_tags %}
+  
+  <ul>
+    {% show_named_menu "Main Menu" %}
+  </ul>
+  
+Then, create your menu in the admin using the drag and drop interface. 
+
+
+
+
+

@@ -20,7 +20,10 @@ class CMSNamedMenuAdmin(admin.ModelAdmin):
             'debug': settings.DEBUG,
         }
 
-        return super(CMSNamedMenuAdmin, self).change_view(request, object_id, form_url, extra_context)
+        return super(CMSNamedMenuAdmin, self).change_view(request,
+                                                          object_id,
+                                                          form_url,
+                                                          extra_context)
 
     def serialize_navigation(self, request):
 
@@ -37,4 +40,3 @@ class CMSNamedMenuAdmin(admin.ModelAdmin):
 
 
 admin.site.register(CMSNamedMenu, CMSNamedMenuAdmin)
-

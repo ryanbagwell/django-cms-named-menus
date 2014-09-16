@@ -9,10 +9,9 @@ class CMSNamedMenu(models.Model):
     slug = AutoSlugField(always_update=True, populate_from='name')
     pages = JSONField(blank=True, null=True,
                       load_kwargs={
-                            'object_pairs_hook': collections.OrderedDict
+                          'object_pairs_hook': collections.OrderedDict
                       },
                       default=[])
 
     def __unicode__(self):
         return self.name
-

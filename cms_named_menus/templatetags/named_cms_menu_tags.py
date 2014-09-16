@@ -31,24 +31,25 @@ class ShowMultipleMenu(ShowMenu):
 
         menu_name = kwargs.pop('menu_name')
 
-        try:
-            named_menu = CMSNamedMenu.objects.get(name__iexact=menu_name).pages
-        except ObjectDoesNotExist:
-            logging.warn("Named CMS Menu %s not found" % menu_name)
-            context['children'] = []
-            return context
-
-        nodes = menu_pool.get_nodes(context['request'], kwargs['namespace'], kwargs['root_id'])
-
-        children = self.arrange_nodes(nodes, named_menu)
-
-        context.update({'children': children,
+        context.update({'children': [],
                 'template': kwargs.get('template'),
                 'from_level': kwargs.get('from_level'),
                 'to_level': kwargs.get('to_level'),
                 'extra_inactive': kwargs.get('extra_inactive'),
                 'extra_active': kwargs.get('extra_active'),
                 'namespace': kwargs.get('namespace')
+            })
+
+        try:
+            named_menu = CMSNamedMenu.objects.get(name__iexact=menu_name).pages
+        except ObjectDoesNotExist:
+            logging.warn("Named CMS Menu %s not found" % menu_name)
+            return context
+
+        nodes = menu_pool.get_nodes(context['request'], kwargs['namespace'], kwargs['root_id'])
+
+        context.update({
+            'children': self.arrange_nodes(nodes, named_menu)
             })
 
         return context

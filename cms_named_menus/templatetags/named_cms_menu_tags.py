@@ -81,11 +81,11 @@ class ShowMultipleMenu(ShowMenu):
 
         for node in nodes:
 
+            node.children = []
+            node.parent = []
+
             if node.id == id:
                 return node
-
-        node.children = []
-        node.parent = []
 
         return
 

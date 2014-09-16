@@ -15,3 +15,7 @@ class CMSNamedMenu(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    class Meta:
+        verbose_name = "CMS Named Menu"
+        verbose_name_plural = "CMS Named Menus"

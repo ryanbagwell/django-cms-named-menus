@@ -84,6 +84,9 @@ class ShowMultipleMenu(ShowMenu):
             if node.id == id:
                 return node
 
+        node.children = []
+        node.parent = []
+
         return
 
 

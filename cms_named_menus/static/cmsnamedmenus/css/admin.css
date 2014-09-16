@@ -153,11 +153,7 @@
   top: 0;
   left: 0;
 }
-.field-pages_json textarea,
-.field-pages_json p.help {
+.field-pages textarea,
+.field-pages p.help {
   display: none;
-}
-.debug .field-pages_json textarea,
-.debug .field-pages_json p.help {
-  display: initial;
 }

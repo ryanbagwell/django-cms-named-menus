@@ -129,6 +129,9 @@
   -webkit-box-shadow: 2px 4px 6px 0 rgba(0, 0, 0, 0.1);
   box-shadow: 2px 4px 6px 0 rgba(0, 0, 0, 0.1);
 }
+.pages {
+  padding-left: 98px;
+}
 .pages:before,
 .pages:after {
   display: table;
@@ -138,15 +141,19 @@
   clear: both;
 }
 .pages aside {
-  width: 45%;
+  width: 48%;
   float: left;
   min-height: inherit;
+}
+.pages aside h3 {
+  padding-left: 0;
 }
 .pages aside.available-pages {
   float: right;
 }
 .pages aside ol {
   min-height: inherit;
+  margin-left: 0;
 }
 .pages aside ol li button {
   position: absolute;

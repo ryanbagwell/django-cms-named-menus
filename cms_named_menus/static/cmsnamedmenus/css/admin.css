@@ -155,6 +155,9 @@
   min-height: inherit;
   margin-left: 0;
 }
+.pages aside ol.dd-list {
+  margin-left: 5%;
+}
 .pages aside ol li button {
   position: absolute;
   top: 0;

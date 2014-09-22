@@ -6,6 +6,10 @@ from ..models import CMSNamedMenu
 from django.core.exceptions import ObjectDoesNotExist
 import logging
 from menus.menu_pool import menu_pool
+from cms.api import get_page_draft
+from cms.utils.moderator import use_draft
+from cms.models.pagemodel import Page
+from cms.menu import page_to_node
 
 logger = logging.getLogger(__name__)
 
@@ -79,15 +83,28 @@ class ShowMultipleMenu(ShowMenu):
 
     def get_node_by_id(self, id, nodes):
 
+        final_node = None
+
         for node in nodes:
 
-            node.children = []
-            node.parent = []
-
             if node.id == id:
-                return node
+                final_node = node
+                break
 
-        return
+        if final_node is None:
+
+            """ If we're editing a page, we need to find
+                the draft version of the page and turn it
+                into a navigation node """
+
+            page = get_page_draft(Page.objects.get(id=id))
+
+            final_node = page_to_node(page, page, 0)
+
+        final_node.children = []
+        final_node.parent = []
+
+        return final_node
 
 
 register.tag(ShowMultipleMenu)

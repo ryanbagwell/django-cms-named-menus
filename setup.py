@@ -21,5 +21,6 @@ setup(
         'Django>=1.6',
         'django-cms>=3.0',
         'jsonfield>=1.0.0',
+        'django-autoslug==1.7.2',
     ],
 )

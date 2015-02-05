@@ -5,6 +5,17 @@ from django.conf import settings
 from menus.menu_pool import menu_pool
 
 
+class LazyEncoder(json.JSONEncoder):
+    """Encodes django's lazy i18n strings.
+        Used to serialize translated strings to JSON, because
+        simplejson chokes on it otherwise. """
+
+    def default(self, obj):
+        if isinstance(obj, Promise):
+            return force_unicode(obj)
+        return obj
+
+
 class CMSNamedMenuAdmin(admin.ModelAdmin):
     change_form_template = 'cms_named_menus/change_form.html'
 
@@ -36,7 +47,7 @@ class CMSNamedMenuAdmin(admin.ModelAdmin):
             node.parent = None
             cleaned.append(node.__dict__)
 
-        return json.dumps(cleaned)
+        return json.dumps(cleaned, cls=LazyEncoder)
 
 
 admin.site.register(CMSNamedMenu, CMSNamedMenuAdmin)

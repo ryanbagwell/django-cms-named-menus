@@ -17,5 +17,5 @@ class CMSNamedMenu(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = "CMS Named Menu"
-        verbose_name_plural = "CMS Named Menus"
+        verbose_name = "CMS Menu"
+        verbose_name_plural = "CMS Menus"

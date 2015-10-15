@@ -61,15 +61,11 @@ module.exports = (grunt) ->
         resolve:
           extensions: ['.coffee', '.js', '']
           modulesDirectories: [
+            'node_modules'
             './cms_named_menus/static/cmsnamedmenus/coffee/'
-            './cms_named_menus/static/cmsnamedmenus/vendor/'
           ]
           alias:
-            'jquery': 'jquery/dist/jquery.min'
-            'underscore': 'underscore/underscore'
-            'backbone': 'backbone/backbone'
-            'jquery-ui': 'jquery-ui/ui/jquery-ui'
-            'jquery-nestable':'jquery.nestable/jquery.nestable'
+            'jquery-nestable':'jquery-nestable/jquery.nestable'
         module:
           loaders: [
             {test: /jquery\.js$/, loader: 'expose?$!expose?jQuery'}

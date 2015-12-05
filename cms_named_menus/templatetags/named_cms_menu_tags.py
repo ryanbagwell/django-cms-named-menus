@@ -9,7 +9,10 @@ from menus.menu_pool import menu_pool
 from cms.api import get_page_draft
 from cms.utils.moderator import use_draft
 from cms.models.pagemodel import Page
-from cms.menu import page_to_node
+try:
+    from cms.menu import page_to_node
+except ImportError:
+    from cms.cms_menus import page_to_node
 
 logger = logging.getLogger(__name__)
 

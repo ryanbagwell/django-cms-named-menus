@@ -53,46 +53,50 @@ class ShowMultipleMenu(ShowMenu):
             logging.warn("Named CMS Menu %s not found" % menu_name)
             return context
 
-        nodes = menu_pool.get_nodes(
-            context['request'], kwargs['namespace'], kwargs['root_id'])
+        nodes = menu_pool.get_nodes(context['request'], kwargs['namespace'], kwargs['root_id'])
 
         context.update({
-            'children': self.arrange_nodes(nodes, named_menu)
+            'children': self.arrange_nodes(nodes, named_menu, namespace=kwargs['namespace'])
         })
 
         return context
 
-    def arrange_nodes(self, node_list, node_config):
+    def arrange_nodes(self, node_list, node_config, namespace=None):
 
         arranged_nodes = []
 
         for item in node_config:
-
+            item.update({'namespace': namespace})
             arranged_nodes.append(self.create_node(item, node_list))
 
         return arranged_nodes
 
     def create_node(self, item, node_list):
 
-        item_node = self.get_node_by_id(item['id'], node_list)
+        item_node = self.get_node_by_id(item['id'], node_list, namespace=item['namespace'])
 
         for child_item in item.get('children', []):
 
-            child_node = self.get_node_by_id(child_item['id'], node_list)
+            child_node = self.get_node_by_id(child_item['id'], node_list, namespace=item['namespace'])
 
             item_node.children.append(child_node)
 
         return item_node
 
-    def get_node_by_id(self, id, nodes):
+    def get_node_by_id(self, id, nodes, namespace=None):
 
         final_node = None
 
         for node in nodes:
 
             if node.id == id:
-                final_node = node
-                break
+                if namespace:
+                    if node.namespace == namespace:
+                        final_node = node
+                        break
+                else:
+                    final_node = node
+                    break
 
         if final_node is None:
 

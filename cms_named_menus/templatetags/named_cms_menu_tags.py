@@ -9,7 +9,10 @@ from menus.menu_pool import menu_pool
 from cms.api import get_page_draft
 from cms.utils.moderator import use_draft
 from cms.models.pagemodel import Page
-from cms.menu import page_to_node
+try:
+    from cms.menu import page_to_node
+except ImportError:
+    from cms.cms_menus import page_to_node
 
 logger = logging.getLogger(__name__)
 
@@ -50,59 +53,70 @@ class ShowMultipleMenu(ShowMenu):
             logging.warn("Named CMS Menu %s not found" % menu_name)
             return context
 
-        nodes = menu_pool.get_nodes(
-            context['request'], kwargs['namespace'], kwargs['root_id'])
+        nodes = menu_pool.get_nodes(context['request'], kwargs['namespace'], kwargs['root_id'])
 
         context.update({
-            'children': self.arrange_nodes(nodes, named_menu)
+            'children': self.arrange_nodes(nodes, named_menu, namespace=kwargs['namespace'])
         })
 
         return context
 
-    def arrange_nodes(self, node_list, node_config):
-
+    def arrange_nodes(self, node_list, node_config, namespace=None):
+        
         arranged_nodes = []
 
         for item in node_config:
-
-            arranged_nodes.append(self.create_node(item, node_list))
+            item.update({'namespace': namespace})
+            node = self.create_node(item, node_list)
+            if node is not None:
+                arranged_nodes.append(node)
 
         return arranged_nodes
 
     def create_node(self, item, node_list):
-
-        item_node = self.get_node_by_id(item['id'], node_list)
-
+        
+        item_node = self.get_node_by_id(item['id'], node_list, namespace=item['namespace'])
+        if item_node is None:
+            return None
+        
         for child_item in item.get('children', []):
-
-            child_node = self.get_node_by_id(child_item['id'], node_list)
-
-            item_node.children.append(child_node)
+            
+            child_node = self.get_node_by_id(child_item['id'], node_list, namespace=item['namespace'])
+            if child_node is not None:
+                item_node.children.append(child_node)
 
         return item_node
 
-    def get_node_by_id(self, id, nodes):
+    def get_node_by_id(self, id, nodes, namespace=None):
 
         final_node = None
 
-        for node in nodes:
+        try:
+            for node in nodes:
+                
+                if node.id == id:
+                    if namespace:
+                        if node.namespace == namespace:
+                            final_node = node
+                            break
+                    else:
+                        final_node = node
+                        break
+    
+            if final_node is None:
 
-            if node.id == id:
-                final_node = node
-                break
+                """ If we're editing a page, we need to find
+                    the draft version of the page and turn it
+                    into a navigation node """
 
-        if final_node is None:
+                page = get_page_draft(Page.objects.get(id=id))
 
-            """ If we're editing a page, we need to find
-                the draft version of the page and turn it
-                into a navigation node """
+                final_node = page_to_node(page, page, 0)
 
-            page = get_page_draft(Page.objects.get(id=id))
-
-            final_node = page_to_node(page, page, 0)
-
-        final_node.children = []
-        final_node.parent = []
+            final_node.children = []
+            final_node.parent = []
+        except:
+            logger.exception('Failed to find node')
 
         return final_node
 

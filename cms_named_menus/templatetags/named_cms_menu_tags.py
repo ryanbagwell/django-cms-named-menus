@@ -62,24 +62,28 @@ class ShowMultipleMenu(ShowMenu):
         return context
 
     def arrange_nodes(self, node_list, node_config, namespace=None):
-
+        
         arranged_nodes = []
 
         for item in node_config:
             item.update({'namespace': namespace})
-            arranged_nodes.append(self.create_node(item, node_list))
+            node = self.create_node(item, node_list)
+            if node is not None:
+                arranged_nodes.append(node)
 
         return arranged_nodes
 
     def create_node(self, item, node_list):
-
+        
         item_node = self.get_node_by_id(item['id'], node_list, namespace=item['namespace'])
-
+        if item_node is None:
+            return None
+        
         for child_item in item.get('children', []):
-
+            
             child_node = self.get_node_by_id(child_item['id'], node_list, namespace=item['namespace'])
-
-            item_node.children.append(child_node)
+            if child_node is not None:
+                item_node.children.append(child_node)
 
         return item_node
 
@@ -87,29 +91,32 @@ class ShowMultipleMenu(ShowMenu):
 
         final_node = None
 
-        for node in nodes:
-
-            if node.id == id:
-                if namespace:
-                    if node.namespace == namespace:
+        try:
+            for node in nodes:
+                
+                if node.id == id:
+                    if namespace:
+                        if node.namespace == namespace:
+                            final_node = node
+                            break
+                    else:
                         final_node = node
                         break
-                else:
-                    final_node = node
-                    break
+    
+            if final_node is None:
 
-        if final_node is None:
+                """ If we're editing a page, we need to find
+                    the draft version of the page and turn it
+                    into a navigation node """
 
-            """ If we're editing a page, we need to find
-                the draft version of the page and turn it
-                into a navigation node """
+                page = get_page_draft(Page.objects.get(id=id))
 
-            page = get_page_draft(Page.objects.get(id=id))
+                final_node = page_to_node(page, page, 0)
 
-            final_node = page_to_node(page, page, 0)
-
-        final_node.children = []
-        final_node.parent = []
+            final_node.children = []
+            final_node.parent = []
+        except:
+            logger.exception('Failed to find node')
 
         return final_node
 
